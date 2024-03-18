@@ -1,0 +1,3 @@
+Combination: product 10 (more bread), product 1 (music CD) - sum: 100.00
+Combination: product 9 (buns), product 8 (bread) - sum: 100.00
+Combination: product 5 (cinema ticket), product 4 (T-shirt), product 2 (newspaper) - sum: 100.00

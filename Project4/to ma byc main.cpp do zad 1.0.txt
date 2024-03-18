@@ -1,0 +1,20 @@
+#include "Psy.h"
+
+int main() {
+    // Tworzenie obiektu za pomocą konstruktora domyślnego
+    Psy domyslnyPsy;
+    domyslnyPsy.wyswietlDane();
+
+    // Tworzenie obiektu za pomocą konstruktora parametrycznego
+    Psy owczarek("Owczarek", 12, 1500);
+    owczarek.wyswietlDane();
+
+    // Tworzenie obiektu dynamicznego
+    Psy* dynamicznyPsy = new Psy("Labrador", 10, 1200);
+    dynamicznyPsy->wyswietlDane();
+
+    // Usuwanie obiektu dynamicznego
+    delete dynamicznyPsy;
+
+    return 0;
+}
