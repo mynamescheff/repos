@@ -1,44 +1,46 @@
 #include <iostream>
 #include <string>
+#include <algorithm> // For std::max
 
-class ChristmasTree {
-public:
-    ChristmasTree(int lines) : base_lines(lines) {}
+void printLine(int space, int stars) {
+    // Ensure that space and stars are not negative
+    space = std::max(0, space);
+    stars = std::max(0, stars);
 
-    void display() {
-        int max_asterisks = 1 + 2 * (base_lines + 4 + 4 - 1);  // Calculate the maximum number of asterisks at the bottom
-        int total_width = max_asterisks; // Use this for consistent centering
+    std::cout << std::string(space, ' ') << std::string(stars, '*') << std::endl;
+}
 
-        // Start asterisks calculations adjusted from your description
-        int start_asterisks_block1 = 1;
-        int start_asterisks_block2 = 1 + 2 * (base_lines - 2);
-        int start_asterisks_block3 = start_asterisks_block2 + 2 * 2 - 6;
-
-        displayBlock(base_lines, total_width, start_asterisks_block1);
-        displayBlock(base_lines + 2, total_width, start_asterisks_block2);
-        displayBlock(base_lines + 4, total_width, start_asterisks_block3);
-        displayStem(total_width);
+void printBlock(int start_stars, int lines, int space) {
+    for (int i = 0; i < lines; ++i) {
+        printLine(space - i, start_stars + 2 * i);
     }
+}
 
-private:
-    int base_lines;
+void printTree(int base_lines) {
+    // Ensure that the maximum width calculation does not result in a negative number
+    int max_width = std::max(1, 1 + 2 * (base_lines - 1));
 
-    void displayBlock(int lines, int total_width, int start_asterisks) {
-        for (int i = 0; i < lines; ++i) {
-            int asterisks = start_asterisks + i * 2;
-            int padding = (total_width - asterisks) / 2;
-            std::cout << std::string(padding, ' ') + std::string(asterisks, '*') + std::string(padding, ' ') << std::endl;
-        }
+    // Calculate initial spacing based on the maximum width of the tree
+    int space = (max_width - 1) / 2 + (base_lines + 4);
+
+    // Print block 1
+    printBlock(1, base_lines, space);
+
+    // Print block 2, which starts with 2 stars less than the last line of block 1
+    int start_stars = 1 + 2 * (base_lines - 1) - 2;
+    printBlock(start_stars, base_lines + 2, space - 1);
+
+    // Print block 3, which starts with 6 stars less than the last line of block 2
+    start_stars += 2 * (base_lines + 1) - 6;
+    printBlock(start_stars, base_lines + 4, space - 3);
+
+    // Print stem, with a width of one-third of base_lines, rounded up to the nearest odd number
+    int stem_width = std::max(1, (base_lines % 2 == 0) ? base_lines + 1 : base_lines) / 3;
+    int stem_space = (max_width - stem_width) / 2;
+    for (int i = 0; i < base_lines; ++i) {
+        printLine(stem_space, stem_width);
     }
-
-    void displayStem(int total_width) {
-        int stem_width = base_lines / 3 | 1; // Ensure stem_width is odd
-        int padding = (total_width - stem_width) / 2;
-        for (int i = 0; i < base_lines; ++i) {  // stem height matches base_lines
-            std::cout << std::string(padding, ' ') + std::string(stem_width, '*') + std::string(padding, ' ') << std::endl;
-        }
-    }
-};
+}
 
 int main() {
     int lines;
@@ -50,8 +52,7 @@ int main() {
         return 1;
     }
 
-    ChristmasTree tree(lines);
-    tree.display();
+    printTree(lines);
 
     return 0;
 }
