@@ -1,6 +1,6 @@
 #include <iostream>
 
-// Base class Punkt
+// Klasa bazowa Punkt
 class Punkt {
 public:
     Punkt() { std::cout << "konstruktor domyslny punkt\n"; }
@@ -8,7 +8,7 @@ public:
     ~Punkt() { std::cout << "destruktor punkt\n"; }
 };
 
-// Derived class Kolo from Punkt
+// Klasa pochodna Kolo od Punkt
 class Kolo : public Punkt {
 public:
     Kolo() : Punkt() { std::cout << "konstruktor domyslny kolo\n"; }
@@ -16,7 +16,7 @@ public:
     ~Kolo() { std::cout << "destruktor kolo\n"; }
 };
 
-// Derived class Walec from Kolo
+// Klasa pochodna Walec od Kolo
 class Walec : public Kolo {
 public:
     Walec() : Kolo() { std::cout << "konstruktor domyslny walec\n"; }
@@ -24,24 +24,24 @@ public:
     ~Walec() { std::cout << "destruktor walec\n"; }
 };
 
-// Derived class Kwadrat from Punkt
+// Klasa pochodna Kwadrat od Punkt
 class Kwadrat : public Punkt {
 public:
     Kwadrat() : Punkt() { std::cout << "konstruktor domyslny kwadrat\n"; }
-    Kwadrat(int x, int y, int sideLength) : Punkt(x, y) { std::cout << "konstruktor parametryczny kwadrat\n"; }
+    Kwadrat(int x, int y, int dlugoscBoku) : Punkt(x, y) { std::cout << "konstruktor parametryczny kwadrat\n"; }
     ~Kwadrat() { std::cout << "destruktor kwadrat\n"; }
 };
 
-// Derived class Prostopadloscian from Kwadrat
+// Klasa pochodna Prostopadloscian od Kwadrat
 class Prostopadloscian : public Kwadrat {
 public:
     Prostopadloscian() : Kwadrat() { std::cout << "konstruktor domyslny prostopadloscian\n"; }
-    Prostopadloscian(int x, int y, int sideLength, int h) : Kwadrat(x, y, sideLength) { std::cout << "konstruktor parametryczny prostopadloscian\n"; }
+    Prostopadloscian(int x, int y, int dlugoscBoku, int h) : Kwadrat(x, y, dlugoscBoku) { std::cout << "konstruktor parametryczny prostopadloscian\n"; }
     ~Prostopadloscian() { std::cout << "destruktor prostopadloscian\n"; }
 };
 
 int main() {
-    // Create objects using default constructors
+    // Tworzenie obiektow przy uzyciu konstruktorow domyslnych
     {
         Walec walecDomyslny;
         Prostopadloscian prostokatDomyslny;
@@ -49,7 +49,7 @@ int main() {
 
     std::cout << "**********\n";
 
-    // Create objects using parameterized constructors
+    // Tworzenie obiektow przy uzyciu konstruktorow parametrycznych
     {
         Walec walecParam(0, 0, 10, 20);
         Prostopadloscian prostokatParam(0, 0, 10, 20);
