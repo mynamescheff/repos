@@ -1,77 +1,83 @@
 #include <iostream>
 #include <string>
-#include <algorithm>
+#include <algorithm> // For std::max
 
-void drukujLinie(int spacja, int gwiazdki) {
-    // sprawdzenie, ze spacja i gwiazdki nie sa ujemne
-    spacja = std::max(0, spacja);
-    gwiazdki = std::max(0, gwiazdki);
+void printLine(int space, int stars) {
+    // Ensure that space and stars are not negative
+    space = std::max(0, space);
+    stars = std::max(0, stars);
 
-    std::cout << std::string(spacja, ' ') << std::string(gwiazdki, '*') << std::endl;
+    std::cout << std::string(space, ' ') << std::string(stars, '*') << std::endl;
 }
 
-void drukujBlok(int start_gwiazdki, int linie, int poczatkowa_spacja, int maks_szerokosc) {
-    for (int i = 0; i < linie; ++i) {
-        // wysrodkowanie linii
-        int biezace_gwiazdki = start_gwiazdki + 2 * i;
-        int spacja = poczatkowa_spacja + (maks_szerokosc - biezace_gwiazdki) / 2;
-        drukujLinie(spacja, biezace_gwiazdki);
+void printBlock(int start_stars, int lines, int initial_space, int max_width) {
+    for (int i = 0; i < lines; ++i) {
+        // Calculate the space needed to center the current line
+        int current_stars = start_stars + 2 * i;
+        int space = initial_space + (max_width - current_stars) / 2;
+        printLine(space, current_stars);
     }
 }
 
-void drukujDrzewo(int podstawa_linie) {
-    //  maksymalna szerokosc drzewa
-    int maks_szerokosc = 1 + 2 * (podstawa_linie - 1 + 2 + podstawa_linie + 2); // to uwzglednia, ze blok 3 jest najszerszy
+void printTree(int base_lines, int console_width) {
+    // Calculate the maximum width of the tree
+    int max_width = 1 + 2 * (base_lines - 1 + 2 + 4); // Based on block 3, which is the widest
 
-    // Poczatkowa spacja
-    int poczatkowa_spacja = (maks_szerokosc - 1) / 2;
+    // Calculate the extra padding needed to center the tree in the console
+    int extra_padding = (console_width - max_width) / 2;
+    extra_padding = std::max(0, extra_padding); // Ensure padding is not negative
 
-    // wyrownanie pnia
-    int pierwsza_linia_spacja = poczatkowa_spacja;
+    // Initial space calculation including extra padding
+    int initial_space = ((max_width - 1) / 2) + extra_padding;
 
-    // Drukuj blok 1
-    drukujBlok(1, podstawa_linie, poczatkowa_spacja, maks_szerokosc);
+    // Store the first line's space amount to use for stem alignment
+    int first_line_space = initial_space;
 
-    // Drukuj blok 2, ktory zaczyna sie o 2 gwiazdki mniej niz ostatnia linia bloku 1
-    int start_gwiazdki = 1 + 2 * (podstawa_linie - 1) - 2;
-    drukujBlok(start_gwiazdki, podstawa_linie + 2, poczatkowa_spacja, maks_szerokosc);
+    // Print block 1
+    printBlock(1, base_lines, initial_space, max_width);
 
-    // Drukuj blok 3, ktory zaczyna sie o 6 gwiazdek mniej niz ostatnia linia bloku 2
-    start_gwiazdki += 2 * (podstawa_linie + 1) - 6;
-    drukujBlok(start_gwiazdki, podstawa_linie + 4, poczatkowa_spacja, maks_szerokosc);
+    // Print block 2, which starts with 2 stars less than the last line of block 1
+    int start_stars = 1 + 2 * (base_lines - 1) - 2;
+    printBlock(start_stars, base_lines + 2, initial_space, max_width);
 
-    int szerokosc_pnia = std::max(1, std::min(podstawa_linie, static_cast<int>(std::round(podstawa_linie / 3.0)) * 2 + 1));
-    int spacja_pnia = (maks_szerokosc - szerokosc_pnia) / 2;
+    // Print block 3, which starts with 6 stars less than the last line of block 2
+    start_stars += 2 * (base_lines + 1) - 6;
+    printBlock(start_stars, base_lines + 4, initial_space, max_width);
 
-    // Drukuj pien
-    for (int i = 0; i < podstawa_linie; ++i) {
-        drukujLinie(spacja_pnia, szerokosc_pnia);
+    // Stem width should be one-third the base_lines, rounded up to nearest odd number
+    int stem_width = std::max(1, (base_lines % 2 == 0) ? base_lines + 1 : base_lines) / 3;
+
+    // Use the first line's space for the stem to ensure it aligns properly
+    int stem_space = first_line_space + (max_width - stem_width) / 2;
+
+    // Print stem
+    for (int i = 0; i < base_lines; ++i) {
+        printLine(stem_space, stem_width);
     }
 }
 
 int main() {
-    int linie;
+    int lines;
+    const int console_width = 120; // Adjust this to your actual console width
+    // If the printout is not centered, set console to full screen or adjust the console width (works on 4k monitor for me)
 
     while (true) {
-        std::cout << "Wprowadz liczbe linii dla czubka drzewa: ";
-        std::cin >> linie;
+        std::cout << "Enter number of lines for the top of the tree: ";
+        std::cin >> lines;
 
-        if (std::cin.fail() || linie <= 0) {
-            std::cin.clear(); // Wyczysc flage bledu
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignoruj zly input
-            std::cout << "Liczba linii musi byc dodatnia liczba calkowita." << std::endl;
+        if (std::cin.fail() || lines <= 0) {
+            std::cin.clear(); // Clear error flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore bad input
+            std::cout << "Number of lines must be a positive integer." << std::endl;
         }
-        else if (linie < 2) {
-            std::cout << "Drzewo musi miec co najmniej 2 linie, aby wygladalo jak drzewo." << std::endl;
-        }
-        else if (linie > 11) {
-            std::cout << "Drzewo bedzie wygladalo nie do konca idealnie z wiecej niz 11 liniami." << std::endl;
+        else if (lines < 2) {
+            std::cout << "The tree must have at least 2 lines to look like a tree." << std::endl;
         }
         else {
-            break; // Prawidlowe dane wejsciowe
+            break; // Valid input
         }
     }
 
-    drukujDrzewo(linie);
+    printTree(lines, console_width);
     return 0;
-}
+    }
